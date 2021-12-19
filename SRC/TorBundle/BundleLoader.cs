@@ -4,13 +4,13 @@
 
 using System.IO;
 using System.Net;
-using System.Diagnostics;
+using System.IO.Compression;
 
 namespace TorBundle
 {
     internal sealed class BundleLoader
     {
-        private const string BundleLocation = "https://github.com/L1ghtM4n/TorProxy/blob/main/LIB/Tor.exe?raw=true";
+        private const string BundleLocation = "https://github.com/L1ghtM4n/TorProxy/blob/main/LIB/Tor.zip?raw=true";
 
         /// <summary>
         /// Download tor expert bundle
@@ -18,22 +18,24 @@ namespace TorBundle
         /// <returns>Bundle location</returns>
         public static string Download()
         {
-            string tempTorBundle = Path.Combine(Path.GetTempPath(), "Tor", "tor.exe");
-            string tempSfxFile = Path.Combine(Path.GetTempPath(), "Tor.exe");
-            if (!File.Exists(tempTorBundle))
+            string tempTorBundleDir = Path.Combine(Path.GetTempPath(), "Tor");
+            string tempTorBundleExecutable = Path.Combine(tempTorBundleDir, "Tor.exe");
+            if (!File.Exists(tempTorBundleExecutable))
             {
                 using (WebClient webClient = new WebClient())
                 {
-                    webClient.DownloadFile(BundleLocation, tempSfxFile);
-                    Process.Start(new ProcessStartInfo() 
-                    { 
-                        FileName = tempSfxFile,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }).WaitForExit();
+                    byte[] data = webClient.DownloadData(BundleLocation);
+                    using (MemoryStream ms = new MemoryStream(data))
+                    {
+                        ZipStorer torZip = ZipStorer.Open(ms, FileAccess.Read);
+                        foreach (ZipStorer.ZipFileEntry zfe in torZip.ReadCentralDir())
+                        {
+                            torZip.ExtractFile(zfe, Path.Combine(tempTorBundleDir, zfe.FilenameInZip));
+                        }
+                    }
                 }
             }
-            return tempTorBundle;
+            return tempTorBundleExecutable;
         }
     }
 }

@@ -54,6 +54,8 @@
     <Compile Include="TorProxy\ProxyInfo.cs" />
     <Compile Include="TorProxy\SocketRelay.cs" />
     <Compile Include="TorProxy\Socks5.cs" />
+    <Compile Include="Utils\Print.cs" />
+    <Compile Include="Utils\ZipStorer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

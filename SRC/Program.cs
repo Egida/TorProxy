@@ -7,12 +7,13 @@ using System.Net;
 
 using TorProxy;
 using TorBundle;
+using TorHandler.Utils;
 
 namespace TorHandler
 {
-    internal class Program
+    internal sealed class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // Download tor expert bundle
             Print.Info("Downloading tor expert bundle ...");
@@ -28,7 +29,7 @@ namespace TorHandler
                 // Set proxy
                 webClient.Proxy = proxy;
                 // Make request
-                Print.Info("Trying make HTTP request over tor ...");
+                Print.Info("Trying make HTTP request over Tor ...");
                 string response = webClient.DownloadString("http://ip-api.com/json");
                 Print.Result(response);
             }
@@ -41,27 +42,12 @@ namespace TorHandler
             // Info
             Console.BackgroundColor = ConsoleColor.Red;
             Console.WriteLine("[#] Coded by L1ghtM4n with <3");
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ResetColor();
             // Done
             Console.ReadLine();
         }
 
-        internal sealed class Print
-        {
-            public static void Info(string text)
-            {
-                Console.BackgroundColor = ConsoleColor.Green;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("[?] " + text);
-                Console.BackgroundColor = ConsoleColor.Black;
-            }
-            public static void Result(string text)
-            {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine(text);
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-        }
+        
 
     }
 }
